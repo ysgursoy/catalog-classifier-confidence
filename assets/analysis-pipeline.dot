@@ -1,0 +1,161 @@
+digraph analysis_pipeline {
+  rankdir=TB;
+  newrank=true;
+  compound=true;
+  nodesep=0.4;
+  ranksep=1.1;
+  fontname="Helvetica";
+  node [fontname="Helvetica", fontsize=11, style="filled", penwidth=1.2];
+  edge [fontname="Helvetica", fontsize=9, color="#555555", arrowsize=0.7];
+
+  /* ===== MICROSERVICES layer ===== */
+  node [shape=box, fillcolor="#dae8fc", color="#6c8ebf"];
+  {
+    MS01 [label="MS.01 API Gateway\naic-ms-gateway"];
+    MS02 [label="MS.02 Account\naic-ms-account"];
+    MS03 [label="MS.03 Product\naic-ms-product"];
+    MS04 [label="MS.04 Interpreter\naic-ms-interpreter"];
+    MS05 [label="MS.05 Image Resizer\naic-ms-image-resizer"];
+    MS07 [label="MS.07 GPT\naic-ms-gpt"];
+    MS08 [label="MS.08 Translator\naic-ms-translator"];
+    MS09 [label="MS.09 Realtime Processor\naic-ms-realtime-processor"];
+  }
+
+  /* ===== MQ EXCHANGES & QUEUES layer ===== */
+  node [shape=hexagon, fillcolor="#ccffff", color="#0e8088"];
+  {
+    MQE01 [label="MQE.01\npreprocess-product"];
+    MQE02 [label="MQE.02\nprocess-product"];
+    MQE03 [label="MQE.03\nproduct-processed"];
+    node [shape=cds, fillcolor="#e1f5fe", color="#0277bd", margin="0.25,0.15"];
+    MQQ01 [label="MQQ.01 process-media"];
+    MQQ02 [label="MQQ.02 map-cab"];
+    MQQ03 [label="MQQ.03 process-ocr"];
+    MQQ04 [label="MQQ.04 predict-brand"];
+    MQQ05 [label="MQQ.05 predict-content"];
+    MQQ06 [label="MQQ.06 predict-category"];
+    MQQ07 [label="MQQ.07 prepare-feedback"];
+    MQQ08 [label="MQQ.08 post-feedback"];
+    MQQ09 [label="MQQ.09 analyze-content"];
+    MQQ10 [label="MQQ.10 prepare-analysis-results"];
+    MQQ11 [label="MQQ.11 update-credit"];
+    MQQ12 [label="MQQ.12 process-text"];
+  }
+
+  /* ===== MQ CONSUMERS layer ===== */
+  node [shape=box, fillcolor="#ffe6cc", color="#d79b00", margin="0.15,0.1"];
+  {
+    MQC01 [label="MQC.01 media-processor"];
+    MQC02 [label="MQC.02 cab-mapper"];
+    MQC03 [label="MQC.03 ocr-processor"];
+    MQC07 [label="MQC.07 feedback-preparer"];
+    MQC08 [label="MQC.08 feedback-poster"];
+    MQC09 [label="MQC.09 content-analyzer"];
+    MQC10 [label="MQC.10 analysis-results-preparer"];
+    MQC11 [label="MQC.11 credit-updater"];
+    MQC12 [label="MQC.12 text-processor"];
+
+    subgraph cluster_pp {
+      label="Product Processors";
+      fontsize=12;
+      style="dashed,filled";
+      fillcolor="#fff9e6";
+      color="#a15100";
+      MQC04 [label="MQC.04 brand-predictor"];
+      MQC06 [label="MQC.06 category-predictor"];
+      MQC05 [label="MQC.05 content-predictor"];
+    }
+  }
+
+  /* ===== Lane labels ===== */
+  node [shape=plaintext, style="", fontsize=15, fontcolor="#444444"];
+  LANE_MS  [label=<<b>MICROSERVICES</b>>];
+  LANE_MQE [label=<<b>MQ EXCHANGES</b>>];
+  LANE_MQQ [label=<<b>MQ QUEUES</b>>];
+  LANE_MQC [label=<<b>MQ CONSUMERS</b>>];
+  LANE_MS -> LANE_MQE -> LANE_MQQ -> LANE_MQC [style=invis];
+
+  /* ===== Left-to-right ordering within lanes (invisible flat chains) ===== */
+  edge [style=invis];
+  LANE_MS -> MS01 -> MS02 -> MS03 -> MS05 -> MS08 -> MS09 -> MS07 -> MS04;
+  LANE_MQE -> MQE01 -> MQE02 -> MQE03;
+  LANE_MQQ -> MQQ01 -> MQQ02 -> MQQ03 -> MQQ12 -> MQQ04 -> MQQ06 -> MQQ05 -> MQQ09 -> MQQ10 -> MQQ11 -> MQQ07 -> MQQ08;
+  LANE_MQC -> MQC01 -> MQC02 -> MQC03 -> MQC12 -> MQC04 -> MQC06 -> MQC05 -> MQC09 -> MQC10 -> MQC11 -> MQC07 -> MQC08;
+  edge [style=solid];
+
+  /* ===== Layer alignment (swimlane rows) ===== */
+  { rank=same; LANE_MS; MS01; MS02; MS03; MS04; MS05; MS07; MS08; MS09; }
+  { rank=same; LANE_MQE; MQE01; MQE02; MQE03; }
+  { rank=same; LANE_MQQ; MQQ01; MQQ02; MQQ03; MQQ04; MQQ05; MQQ06; MQQ07; MQQ08; MQQ09; MQQ10; MQQ11; MQQ12; }
+  { rank=same; LANE_MQC; MQC01; MQC02; MQC03; MQC04; MQC05; MQC06; MQC07; MQC08; MQC09; MQC10; MQC11; MQC12; }
+
+  /* Entry */
+  MS01 -> MS02 [label="WF.02 Check credentials & hash\nWF.36 Check credits"];
+  MS01 -> MS03 [label="WF.03 Post product data"];
+  MS01 -> MS09 [label="WF.44 Process realtime"];
+  MS03 -> MQE01 [label="WF.05 Publish preprocess product event"];
+
+  /* Preprocessing */
+  MQE01 -> MQQ01 [style=dashed];
+  MQE01 -> MQQ02 [style=dashed];
+  MQE01 -> MQQ12 [style=dashed];
+  MQQ01 -> MQC01 [label="WF.06 Consume process-media queue", style=dashed];
+  MQC01 -> MQQ03 [label="WF.06.02 Publish process ocr event"];
+  MQC01 -> MQE02;
+  MQQ02 -> MQC02 [label="WF.07 Consume map-cab queue", style=dashed];
+  MQC02 -> MQE02;
+  MQQ03 -> MQC03 [label="WF.08 Consume process-ocr queue", style=dashed];
+  MQC03 -> MQE02 [label="WF.09 Publish process product event"];
+  MQQ12 -> MQC12 [label="WF.43 Consume process-text queue", style=dashed];
+  MQC12 -> MQE02;
+  MQC12 -> MS08;
+  MS05 -> MQC01;
+
+  /* Prediction */
+  MQE02 -> MQQ04 [style=dashed];
+  MQE02 -> MQQ06 [style=dashed];
+  MQQ04 -> MQC04 [label="WF.10.01 Consume predict-brand queue", style=dashed];
+  MQQ06 -> MQC06 [style=dashed];
+  MQC04 -> MQQ05 [label="WF.13 Publish predict content event"];
+  MQC06 -> MQQ05 [label="WF.14 Consume predict-category queue"];
+  MQQ05 -> MQC05 [label="WF.10.02 Consume predict-content queue", style=dashed];
+  MQC05 -> MQQ09 [label="WF.36 Publish analyze content event"];
+  MQQ09 -> MQC09 [label="WF.35 Consume analyze-content queue", style=dashed];
+  MQC09 -> MQE03 [label="WF.15.01 Publish product processed event"];
+  MQC09 -> MS07 [label="WF.42.01 Generate GPT content"];
+
+  /* Interpretation */
+  MQC06 -> MS04 [label="WF.33 Interprete model results", ltail=cluster_pp];
+  MS04 -> MQC06 [label="WF.34 Get models", lhead=cluster_pp];
+  MS09 -> MS07 [label="WF.42.02 Generate GPT content"];
+  MS09 -> MS08;
+  MS09 -> MQC06 [label="WF.45 Predict category realtime"];
+
+  /* Post-processing and feedback */
+  MQE03 -> MQQ10 [style=dashed];
+  MQE03 -> MQQ11 [style=dashed];
+  MQQ10 -> MQC10 [label="WF.41 Consume prepare-analysis-results queue", style=dashed];
+  MQQ11 -> MQC11 [label="WF.38 Consume update-credit queue", style=dashed];
+  MQC11 -> MS02 [label="WF.37 Update credits"];
+  MS04 -> MQC10 [label="WF.18 Get prediction results"];
+  MQC10 -> MQQ07 [label="WF.39 Publish prepare feedback event"];
+  MQQ07 -> MQC07 [label="WF.17 Consume prepare feedback queue", style=dashed];
+  MQC07 -> MQQ08 [label="WF.20 Publish post feedback event"];
+  MQQ08 -> MQC08 [label="WF.21 Post feedback to customer", style=dashed];
+
+  /* Legend */
+  subgraph cluster_legend {
+    label="Legend";
+    fontsize=11;
+    style="filled";
+    fillcolor="#fafafa";
+    color="#cccccc";
+    node [fontsize=9, margin="0.1,0.05", style="filled"];
+    LMS  [label="Microservice", shape=box, fillcolor="#dae8fc", color="#6c8ebf"];
+    LMQE [label="MQ exchange", shape=hexagon, fillcolor="#ccffff", color="#0e8088"];
+    LMQQ [label="MQ queue", shape=cds, fillcolor="#e1f5fe", color="#0277bd"];
+    LMQC [label="MQ consumer", shape=box, fillcolor="#ffe6cc", color="#d79b00"];
+    LMS -> LMQE [label="direct call / publish", fontsize=8];
+    LMQQ -> LMQC [label="queue delivery", style=dashed, fontsize=8];
+  }
+}

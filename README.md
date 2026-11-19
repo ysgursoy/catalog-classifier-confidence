@@ -121,14 +121,14 @@ Sadi Gürsoy designed and implemented the confidence layer as an abstract micros
 
 ## Files
 
-| File                               | Purpose                                                    |
-| ---------------------------------- | ---------------------------------------------------------- |
-| `PROJECT.md`                       | Problem, category tree, worked examples and design rationale |
-| `confidence_score.py`              | Model weights, prediction array and confidence             |
-| `categories_to_be_explored.py`     | Selecting the categories to explore from a prediction array |
-| `test_confidence_score.py`         | Tests for the confidence calculation                       |
-| `test_categories_to_be_explored.py` | Tests for category selection, including the 40% boundary  |
-| `assets/`                          | Decision-flow diagram used in `PROJECT.md`                 |
+| File                                | Purpose                                                      |
+| ----------------------------------- | ------------------------------------------------------------ |
+| `PROJECT.md`                        | Problem, category tree, worked examples and design rationale |
+| `confidence_score.py`               | Model weights, prediction array and confidence               |
+| `categories_to_be_explored.py`      | Selecting the categories to explore from a prediction array  |
+| `test_confidence_score.py`          | Tests for the confidence calculation                         |
+| `test_categories_to_be_explored.py` | Tests for category selection, including the 40% boundary     |
+| `assets/`                           | Decision-flow diagram used in `PROJECT.md`                   |
 
 ## License
 

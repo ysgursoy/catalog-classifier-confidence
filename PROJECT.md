@@ -122,3 +122,11 @@ For a concrete comparison, `categories_to_be_explored.py` also runs two four-cat
 | 55, 15, 15, 15 | 15 / 55 ≈ 0.27 | First only |
 
 In the first case, the runner-up has 80% of the leader's score, so it is close enough to warrant another round of predictions, assuming models are available. In the second, the runner-ups have about 27% of it, so the classifier follows the leader alone, even though the leading score is the same 55%. The top score alone does not determine how much work the classifier does; the gap to the runner-up does. These illustrative scores show how the routing rule behaves. Classification accuracy requires evaluation on labeled products.
+
+## Platform architecture
+
+The classifier ran inside Artifica's AI-Commerce platform. The diagram below shows the analysis pipeline — microservices, MQ exchanges and queues, and MQ consumers — from product ingestion through preprocessing and prediction to customer feedback ([Graphviz source](assets/analysis-pipeline.dot)). The category classifier described in this case study lives in the `MQC.06 category-predictor` worker, with `MS.04 Interpreter` combining model responses and persisting prediction results. Every `MS.*` microservice runs behind its own load balancer, and `MS.07 GPT` runs on an Azure instance. Solid arrows are direct calls and publishes; dashed arrows are message-queue deliveries. `WF.nn` labels are numbered workflow steps.
+
+<p align="center">
+  <img src="assets/analysis-pipeline.svg" alt="Analysis pipeline: microservices, MQ exchanges and queues, and MQ consumers, from product ingestion through preprocessing, prediction, and feedback" width="100%">
+</p>

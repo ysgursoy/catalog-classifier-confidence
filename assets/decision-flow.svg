@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1150 772" width="1150" height="772" role="img" aria-labelledby="title desc">
+  <title id="title">Classification step decision flow</title>
+  <desc id="desc">Decides whether the classifier continues into eligible subcategories or stops and returns either the last confident prediction or the best available prediction flagged as uncertain.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,1 L9,5 L0,9 z" fill="#64748b"/>
+    </marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
+    <style>
+      text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; fill: #0f172a; }
+      .node { font-size: 13.5px; text-anchor: middle; dominant-baseline: middle; }
+      .title { font-size: 14px; font-weight: 600; text-anchor: middle; dominant-baseline: middle; }
+      .sub { font-size: 12.5px; text-anchor: middle; dominant-baseline: middle; fill: #334155; }
+      .edge { fill: none; stroke: #64748b; stroke-width: 1.6; stroke-linejoin: round; }
+      .label { font-size: 12px; font-weight: 600; fill: #475569; paint-order: stroke; stroke: #ffffff; stroke-width: 5px; stroke-linejoin: round; }
+      .decision { fill: #f8fafc; stroke: #475569; stroke-width: 1.4; }
+      .action { fill: #dbeafe; stroke: #3b82f6; stroke-width: 1.4; }
+      .proceed { fill: #dcfce7; stroke: #16a34a; stroke-width: 1.4; }
+      .stop { fill: #fee2e2; stroke: #dc2626; stroke-width: 1.4; }
+      .uncertain { fill: #fef3c7; stroke: #d97706; stroke-width: 1.4; }
+      .legend { font-size: 12.5px; fill: #475569; }
+      .legend tspan.key { font-weight: 600; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1150" height="772" rx="16" fill="#ffffff"/>
+
+  <!-- Edges -->
+  <path class="edge" d="M170,72 V107" marker-end="url(#arrow)"/>
+  <path class="edge" d="M285,165 H335" marker-end="url(#arrow)"/>
+  <path class="edge" d="M170,223 V262" marker-end="url(#arrow)"/>
+  <path class="edge" d="M285,320 H345" marker-end="url(#arrow)"/>
+  <path class="edge" d="M450,223 V292" marker-end="url(#arrow)"/>
+  <path class="edge" d="M170,378 V432" marker-end="url(#arrow)"/>
+  <path class="edge" d="M450,348 V412 H170"/>
+  <circle cx="170" cy="412" r="3.2" fill="#64748b"/>
+  <path class="edge" d="M285,490 H615" marker-end="url(#arrow)"/>
+  <path class="edge" d="M565,165 H730 V432" marker-end="url(#arrow)"/>
+  <path class="edge" d="M170,548 V600" marker-end="url(#arrow)"/>
+  <path class="edge" d="M730,548 V600" marker-end="url(#arrow)"/>
+  <path class="edge" d="M845,490 H900" marker-end="url(#arrow)"/>
+
+  <!-- Edge labels -->
+  <text class="label" x="310" y="157" text-anchor="middle">No</text>
+  <text class="label" x="180" y="244">Yes</text>
+  <text class="label" x="315" y="312" text-anchor="middle">Yes</text>
+  <text class="label" x="460" y="259">Yes</text>
+  <text class="label" x="180" y="397">No</text>
+  <text class="label" x="350" y="482" text-anchor="middle">No</text>
+  <text class="label" x="600" y="157" text-anchor="middle">No</text>
+  <text class="label" x="180" y="576">Yes</text>
+  <text class="label" x="740" y="576">Yes</text>
+  <text class="label" x="872" y="482" text-anchor="middle">No</text>
+
+  <!-- Start -->
+  <rect x="100" y="28" width="140" height="44" rx="22" fill="#1e293b" filter="url(#shadow)"/>
+  <text class="title" x="170" y="50" style="fill:#ffffff">Start</text>
+
+  <!-- Decisions -->
+  <g filter="url(#shadow)">
+    <polygon class="decision" points="170,107 285,165 170,223 55,165"/>
+    <polygon class="decision" points="450,107 565,165 450,223 335,165"/>
+    <polygon class="decision" points="170,262 285,320 170,378 55,320"/>
+    <polygon class="decision" points="170,432 285,490 170,548 55,490"/>
+    <polygon class="decision" points="730,432 845,490 730,548 615,490"/>
+  </g>
+  <text class="node" x="170" y="156">Exactly one</text>
+  <text class="node" x="170" y="174">prediction returned?</text>
+  <text class="node" x="450" y="156">Exactly one returned</text>
+  <text class="node" x="450" y="174">prediction confident?</text>
+  <text class="node" x="170" y="320">Is it confident?</text>
+  <text class="node" x="170" y="481">Eligible categories</text>
+  <text class="node" x="170" y="499">to explore?</text>
+  <text class="node" x="730" y="481">Previously saved</text>
+  <text class="node" x="730" y="499">confident prediction?</text>
+
+  <!-- Action -->
+  <rect class="action" x="345" y="292" width="210" height="56" rx="10" filter="url(#shadow)"/>
+  <text class="node" x="450" y="311">Save as the last</text>
+  <text class="node" x="450" y="329">confident prediction</text>
+
+  <!-- Outcomes -->
+  <rect class="proceed" x="55" y="600" width="230" height="66" rx="14" filter="url(#shadow)"/>
+  <text class="title" x="170" y="623">Continue</text>
+  <text class="sub" x="170" y="644">explore eligible categories</text>
+
+  <rect class="stop" x="615" y="600" width="230" height="66" rx="14" filter="url(#shadow)"/>
+  <text class="title" x="730" y="623">Stop</text>
+  <text class="sub" x="730" y="644">return last confident prediction</text>
+
+  <rect class="uncertain" x="900" y="452" width="220" height="76" rx="14" filter="url(#shadow)"/>
+  <text class="title" x="1010" y="472">Stop</text>
+  <text class="sub" x="1010" y="492">return best available prediction,</text>
+  <text class="sub" x="1010" y="510">flagged as uncertain</text>
+
+  <!-- Legend -->
+  <line x1="40" y1="702" x2="1110" y2="702" stroke="#e2e8f0" stroke-width="1"/>
+  <text class="legend" x="40" y="728"><tspan class="key">Confident</tspan>: exactly one category's score relative to the leader &#8805; convergence threshold</text>
+  <text class="legend" x="40" y="750"><tspan class="key">Eligible category</tspan>: score relative to the leader &#8805; convergence threshold, and a working model exists for it</text>
+</svg>

@@ -1,6 +1,6 @@
 # Catalog classifier confidence
 
-A case study of how Artifica's hierarchical product classifier handled competing category predictions, with a runnable example of its branch-selection rule.
+A case study of how Artifica's hierarchical product classifier, built in 2022, handled competing category predictions, with a runnable example of its branch-selection rule.
 
 The case study addresses four questions that arise when several models classify the same product within a category tree:
 

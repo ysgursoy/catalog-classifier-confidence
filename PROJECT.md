@@ -1,6 +1,6 @@
 # How Artifica classified products
 
-Artifica built models for product categorization, price checks, attribute extraction and brand detection. This case study focuses on categorization in an e-commerce catalog with more than 4,000 categories across six levels.
+In 2022, Artifica built models for product categorization, price checks, attribute extraction and brand detection. This case study focuses on categorization in an e-commerce catalog with more than 4,000 categories across six levels.
 
 The classifier combined predictions from product images, titles, descriptions and attributes. It moved from broad categories to more specific ones, deciding at each step which branches to explore and whether the evidence supported a confident result. The system was offered as a SaaS product used by major marketplaces in Türkiye.
 

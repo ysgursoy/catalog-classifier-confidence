@@ -117,7 +117,7 @@ The scripts reproduce routing from supplied scores. Their output does not measur
 
 ## Contributions
 
-Sadi Gürsoy designed and implemented the confidence layer as an abstract microservice described here: the confidence weighting of model responses, the branch-selection rule, the stopping and fallback logic, and the way confidence is combined across iterations. The Artifica team prepared the training data and trained the category models whose outputs the layer combines.
+Sadi Gürsoy designed the category models, prepared their training data, and designed the platform architecture and workflows. He also designed and implemented the confidence layer as an abstract microservice described here: the confidence weighting of model responses, the branch-selection rule, the stopping and fallback logic, and the way confidence is combined across iterations. His co-founder trained the category models to that design and built the platform's other microservices.
 
 ## Files
 

@@ -123,6 +123,31 @@ For a concrete comparison, `categories_to_be_explored.py` also runs two four-cat
 
 In the first case, the runner-up has 80% of the leader's score, so it is close enough to warrant another round of predictions, assuming models are available. In the second, the runner-ups have about 27% of it, so the classifier follows the leader alone, even though the leading score is the same 55%. The top score alone does not determine how much work the classifier does; the gap to the runner-up does. These illustrative scores show how the routing rule behaves. Classification accuracy requires evaluation on labeled products.
 
+## Results on one merchant catalog
+
+One merchant's home-textile and furniture catalog was classified in 2023. The merchant label is not ground truth here: the merchant used the system because their existing categorization needed correction, so the figures below measure how much of the catalog the system proposed to change, not an error rate. All numbers cover only products that scored at least 0.9 confidence.
+
+Of the 37,139 such products that already had a merchant category (another 864 had none and received one):
+
+| System output vs. merchant category | Products | Share of 37,139 |
+| --- | ---: | ---: |
+| Same category kept | 1,600 | 4.3% |
+| More specific category, same branch | 11,160 | 30.0% |
+| More general category, same branch | 3,195 | 8.6% |
+| Different branch | 21,184 | 57.0% |
+
+The merchant's team reviewed a random sample of 910 proposals item by item and applied 803 of them to their catalog; rejected proposals kept their original category.
+
+| Proposal type | Reviewed | Applied | Rate |
+| --- | ---: | ---: | ---: |
+| Category for previously uncategorized product | 60 | 58 | 96.7% |
+| More specific category, same branch | 220 | 206 | 93.6% |
+| Different branch | 550 | 506 | 92.0% |
+| More general category, same branch | 80 | 33 | 41.3% |
+| **Total** | **910** | **803** | **88.2%** |
+
+The merchant applied 88% of the sampled proposals, including 92% of the moves to a different branch — the proposal type that dominated the output. The clear exception is proposals to broaden a category, which were mostly declined (33/80). Note that the application rate is not a blind accuracy measurement: the merchant decided while seeing each proposal.
+
 ## Platform architecture
 
 The classifier ran inside Artifica's AI-Commerce platform. The diagram below shows the analysis pipeline — microservices, MQ exchanges and queues, and MQ consumers — from product ingestion through preprocessing and prediction to customer feedback ([Graphviz source](assets/analysis-pipeline.dot)). The category classifier described in this case study lives in the `MQC.06 category-predictor` worker, with `MS.04 Interpreter` combining model responses and persisting prediction results. Every `MS.*` microservice runs behind its own load balancer, and `MS.07 GPT` runs on an Azure instance. Solid arrows are direct calls and publishes; dashed arrows are message-queue deliveries. `WF.nn` labels are numbered workflow steps.
